@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, validator
-from typing import Optional
+
 
 class UserCreate(BaseModel):
     full_name: str
@@ -7,21 +7,23 @@ class UserCreate(BaseModel):
     password: str
     role: str
 
-    @validator('password')
+    @validator("password")
     def password_length(cls, v):
         if len(v) < 6:
-            raise ValueError('Password must be at least 6 characters long')
+            raise ValueError("Password must be at least 6 characters long")
         return v
 
-    @validator('role')
+    @validator("role")
     def valid_role(cls, v):
-        if v not in ['student', 'teacher']:
+        if v not in ["student", "teacher"]:
             raise ValueError('Role must be either "student" or "teacher"')
         return v
+
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
 
 class UserResponse(BaseModel):
     id: int
@@ -32,4 +34,3 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
-        

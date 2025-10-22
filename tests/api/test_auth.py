@@ -106,7 +106,9 @@ async def test_login_wrong_password_401(client, make_email):
     )
     assert resp_reg.status_code == 201, resp_reg.text
 
-    resp = await client.post("/auth/login", json={"email": email, "password": "wrongpass"})
+    resp = await client.post(
+        "/auth/login", json={"email": email, "password": "wrongpass"}
+    )
     assert resp.status_code == 401, resp.text
 
 

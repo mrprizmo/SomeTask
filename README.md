@@ -68,7 +68,7 @@ REST API с JWT аутентификацией. Основные endpoints:
 - /submissions/* - проверка работ
 - /analytics/* - отчеты и статистика
 
-Полная спецификация: [openapi.yaml](openapi.yaml)
+Полная спецификация: [openapi.yaml](app/openapi.yaml)
 
 ## Разработка
 

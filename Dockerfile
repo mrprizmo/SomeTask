@@ -18,10 +18,9 @@ RUN python -m pip install --upgrade pip && \
 
 COPY app /app/app
 
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN useradd -m appuser
+USER appuser
 
 EXPOSE 8000
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "84.201.171.224", "--port", "8000"]

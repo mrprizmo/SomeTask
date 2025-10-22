@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16-alpine
@@ -15,7 +13,7 @@ services:
       timeout: 5s
       retries: 20
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5430}:5430"
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./docker/db/init:/docker-entrypoint-initdb.d:ro
@@ -30,11 +28,9 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@db:5432/hw_checker}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@db:5430/hw_checker}
     # ports:
     #   - "${BACKEND_PORT:-8000}:8000"
-    volumes:
-      - uploads_data:/app/uploads
 
   frontend:
     image: nginx:1.25-alpine
@@ -45,7 +41,7 @@ services:
     ports:
       - "${FRONTEND_PORT:-8080}:80"
     volumes:
-      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./.nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./app/static:/var/www/static:ro
 
 volumes:

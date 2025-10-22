@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="css/register.css">
+</head>
+
+<body>
+    <div class="register-container">
+        <h2>Регистрация</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Подтвердите пароль:</label>
+                <input type="password" id="confirm-password" required>
+            </div>
+
+            <div class="toggle-container">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="roleToggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="role-text" id="roleText">Я студент</span>
+            </div>
+
+            <button type="submit" class="register-btn">Зарегистрироваться</button>
+            <button type="button" class="back-btn" onclick="window.location.href='index.html'">Назад к входу</button>
+        </form>
+    </div>
+
+    <script>
+        const roleToggle = document.getElementById('roleToggle');
+        const roleText = document.getElementById('roleText');
+
+        roleToggle.addEventListener('change', function () {
+            if (this.checked) {
+                roleText.textContent = 'Я преподаватель';
+            } else {
+                roleText.textContent = 'Я студент';
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const role = roleToggle.checked ? 'teacher' : 'student';
+
+            if (password !== confirmPassword) {
+                alert('Пароли не совпадают!');
+                return;
+            }
+
+            console.log('Email:', email);
+            console.log('Password:', password);
+            console.log('Role:', role);
+            alert('Регистрация успешна! Роль: ' + (role === 'teacher' ? 'Преподаватель' : 'Студент'));
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = '''
+(
+  \.git
+| \.mypy_cache
+| \.ruff_cache
+| \.venv
+| venv
+| build
+| dist
+| node_modules
+| __pycache__
+| migrations
+)
+'''
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "N", "B", "C4", "RUF"]
+ignore = [
+  "E203",  # совместимость с black для срезов
+  "W503",  # перенос оператора перед операндом — ok для black
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

@@ -16,12 +16,14 @@ def anyio_backend():
 def make_email():
     def _make_email(prefix: str = "user") -> str:
         return f"{prefix}_{uuid.uuid4().hex[:8]}@example.com"
+
     return _make_email
 
 
 @pytest.fixture(scope="session")
 def app_instance():
     from app.main import app
+
     return app
 
 

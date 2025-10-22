@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
 
+
 class Token(Base):
     __tablename__ = "tokens"
 
@@ -16,4 +17,3 @@ class Token(Base):
 
     def __repr__(self):
         return f"<Token(id={self.id}, user_id={self.user_id})>"
-    

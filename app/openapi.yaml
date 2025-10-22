@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: SomeTask API
+  title: SomeTest API
   version: 1.0.0
-  description: API для системы сбора и проверки домашних заданий.
+  description: API для системы сбора и проверки домашних заданий
 
 paths:
   /auth/register:
@@ -107,6 +107,364 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
 
+  /auth/logout:
+    post:
+      summary: Выход из системы
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+                  example: "abc123def456ghi789"
+      responses:
+        '200':
+          description: Успешный выход
+        '401':
+          description: Неверный токен
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /courses:
+    get:
+      summary: Получить список курсов
+      tags: [Courses]
+      parameters:
+        - in: query
+          name: teacher_id
+          schema:
+            type: integer
+          description: ID преподавателя для фильтрации
+        - in: query
+          name: enrolled
+          schema:
+            type: boolean
+          description: Только курсы, на которые записан текущий пользователь
+      responses:
+        '200':
+          description: Список курсов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    course_id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: "Математика для начинающих"
+                    description:
+                      type: string
+                      example: "Базовый курс математики"
+                    teacher_id:
+                      type: integer
+                      example: 5
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2023-10-01T10:00:00Z"
+        '500':
+          description: Внутренняя ошибка сервера
+
+    post:
+      summary: Создать новый курс
+      tags: [Courses]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, description]
+              properties:
+                title:
+                  type: string
+                  example: "Математика для начинающих"
+                description:
+                  type: string
+                  example: "Базовый курс математики"
+      responses:
+        '201':
+          description: Курс создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: integer
+                    example: 1
+                  title:
+                    type: string
+                    example: "Математика для начинающих"
+                  description:
+                    type: string
+                    example: "Базовый курс математики"
+                  teacher_id:
+                    type: integer
+                    example: 5
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T10:00:00Z"
+        '403':
+          description: Недостаточно прав (только для преподавателей)
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /courses/{course_id}:
+    get:
+      summary: Получить информацию о курсе
+      tags: [Courses]
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Информация о курсе
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: integer
+                    example: 1
+                  title:
+                    type: string
+                    example: "Математика для начинающих"
+                  description:
+                    type: string
+                    example: "Базовый курс математики"
+                  teacher_id:
+                    type: integer
+                    example: 5
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T10:00:00Z"
+        '404':
+          description: Курс не найден
+        '500':
+          description: Внутренняя ошибка сервера
+
+    put:
+      summary: Обновить информацию о курсе
+      tags: [Courses]
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Обновленное название курса"
+                description:
+                  type: string
+                  example: "Обновленное описание курса"
+      responses:
+        '200':
+          description: Курс обновлен
+        '403':
+          description: Недостаточно прав
+        '404':
+          description: Курс не найден
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /courses/{course_id}/enroll:
+    post:
+      summary: Записаться на курс
+      tags: [Courses]
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешно записан на курс
+        '403':
+          description: Недостаточно прав или уже записан
+        '404':
+          description: Курс не найден
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /homeworks:
+    post:
+      summary: Создать домашнее задание
+      tags: [Homeworks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [course_id, title, description, deadline]
+              properties:
+                course_id:
+                  type: integer
+                  example: 1
+                title:
+                  type: string
+                  example: "Задача по алгебре"
+                description:
+                  type: string
+                  example: "Решить задачи 1-10 из учебника"
+                deadline:
+                  type: string
+                  format: date-time
+                  example: "2023-10-15T23:59:59Z"
+                max_grade:
+                  type: integer
+                  example: 100
+      responses:
+        '201':
+          description: Домашнее задание создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  homework_id:
+                    type: integer
+                    example: 1
+                  course_id:
+                    type: integer
+                    example: 1
+                  title:
+                    type: string
+                    example: "Задача по алгебре"
+                  description:
+                    type: string
+                    example: "Решить задачи 1-10 из учебника"
+                  deadline:
+                    type: string
+                    format: date-time
+                    example: "2023-10-15T23:59:59Z"
+                  max_grade:
+                    type: integer
+                    example: 100
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T10:00:00Z"
+        '403':
+          description: Недостаточно прав
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /homeworks/{homework_id}/submit:
+    post:
+      summary: Отправить решение домашнего задания
+      tags: [Homeworks]
+      parameters:
+        - in: path
+          name: homework_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [attachment_url]
+              properties:
+                attachment_url:
+                  type: string
+                  format: uri
+                  example: "https://example.com/my_solution.pdf"
+      responses:
+        '201':
+          description: Решение отправлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submission_id:
+                    type: integer
+                    example: 1
+                  homework_id:
+                    type: integer
+                    example: 1
+                  student_id:
+                    type: integer
+                    example: 3
+                  attachment_url:
+                    type: string
+                    format: uri
+                    example: "https://example.com/my_solution.pdf"
+                  submitted_at:
+                    type: string
+                    format: date-time
+                    example: "2023-10-10T14:30:00Z"
+        '403':
+          description: Недостаточно прав или не записан на курс
+        '404':
+          description: Домашнее задание не найдено
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /submissions/{submission_id}/grade:
+    post:
+      summary: Оценить решение
+      tags: [Homeworks]
+      parameters:
+        - in: path
+          name: submission_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [grade, feedback]
+              properties:
+                grade:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  example: 85
+                feedback:
+                  type: string
+                  example: "Хорошая работа, но можно улучшить..."
+      responses:
+        '200':
+          description: Решение оценено
+        '403':
+          description: Недостаточно прав
+        '404':
+          description: Решение не найдено
+        '500':
+          description: Внутренняя ошибка сервера
+
   /health:
     get:
       summary: Проверка здоровья сервиса
@@ -137,8 +495,17 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "SomeTask API"
+                    example: "SomeTest API"
                   version:
                     type: string
                     example: "1.0.0"
-                    
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

@@ -77,6 +77,5 @@ REST API с JWT аутентификацией. Основные endpoints:
 docker-compose up -d
 
 # Установка зависимостей
-npm install  # frontend
 pip install -r requirements.txt  # backend"
 ```

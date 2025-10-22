@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SomeTask Student</title>
+    <link rel="stylesheet" href="css/student_tasks.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Панель студента</h2>
+                <p>student@university.edu</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active" data-tab="active-assignments">
+                    <i class="fas fa-tasks"></i> Активные задания
+                </li>
+                <li data-tab="submitted-assignments">
+                    <i class="fas fa-check-circle"></i> Сданные задания
+                </li>
+                <li data-tab="groups">
+                    <i class="fas fa-users"></i> Мои группы
+                </li>
+                <li style="margin-top: 20px; padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Active Assignments Tab -->
+            <div id="active-assignments" class="tab-content active">
+                <div class="header">
+                    <h1>Активные задания</h1>
+                    <button class="btn btn-primary" id="joinGroupBtn">
+                        <i class="fas fa-plus"></i> Вступить в группу
+                    </button>
+                </div>
+
+                <div class="assignments-grid" id="activeAssignmentsContainer">
+                    <!-- Active assignments will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Submitted Assignments Tab -->
+            <div id="submitted-assignments" class="tab-content">
+                <div class="header">
+                    <h1>Сданные задания</h1>
+                </div>
+
+                <table id="submittedAssignmentsTable">
+                    <thead>
+                        <tr>
+                            <th>Задание</th>
+                            <th>Группа</th>
+                            <th>Дата сдачи</th>
+                            <th>Статус</th>
+                            <th>Оценка</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Submitted assignments data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Groups Tab -->
+            <div id="groups" class="tab-content">
+                <div class="header">
+                    <h1>Мои группы</h1>
+                </div>
+
+                <div class="groups-grid" id="groupsContainer">
+                    <!-- Groups will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Group Modal -->
+    <div id="joinGroupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Вступить в группу</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="joinGroupForm">
+                <div class="form-group">
+                    <label for="inviteCode">Код приглашения</label>
+                    <input type="text" id="inviteCode" placeholder="Введите код приглашения" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="cancelJoinBtn">Отменить</button>
+                    <button type="submit" class="btn btn-primary">Вступить в группу</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Submit Assignment Modal -->
+    <div id="submitAssignmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Сдать задание</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="submitAssignmentForm">
+                <div class="form-group">
+                    <label>Задание:</label>
+                    <p id="assignmentTitle" style="font-weight: 600;">Название задания</p>
+                </div>
+                <div class="form-group">
+                    <label>Группа:</label>
+                    <p id="assignmentGroup" style="font-weight: 600;">Название группы</p>
+                </div>
+                <div class="form-group">
+                    <label>Дедлайн:</label>
+                    <p id="assignmentDeadline">Дата и время</p>
+                </div>
+                <div class="form-group">
+                    <label>Описание:</label>
+                    <p id="assignmentDescription">Описание задания</p>
+                </div>
+                <div class="form-group">
+                    <label for="submissionLink">Ссылка на задание в облаке *</label>
+                    <input type="url" id="submissionLink" placeholder="https://drive.google.com/..." required>
+                    <small>Укажите ссылку на Google Drive, Yandex Disk или другое облачное хранилище</small>
+                </div>
+                <div class="form-group">
+                    <label for="submissionComment">Комментарий (необязательно)</label>
+                    <textarea id="submissionComment" rows="3"
+                        placeholder="Добавьте комментарий к вашему решению..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="cancelSubmitBtn">Отменить</button>
+                    <button type="submit" class="btn btn-primary">Сдать задание</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Submission Modal -->
+    <div id="viewSubmissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Результат задания</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Задание:</label>
+                <p id="viewAssignmentTitle" style="font-weight: 600;">Название задания</p>
+            </div>
+            <div class="form-group">
+                <label>Группа:</label>
+                <p id="viewAssignmentGroup" style="font-weight: 600;">Название группы</p>
+            </div>
+            <div class="form-group">
+                <label>Дата сдачи:</label>
+                <p id="submissionDate">Дата и время</p>
+            </div>
+            <div class="form-group">
+                <label>Оценка:</label>
+                <div class="grade-display">
+                    <span id="gradeValue">-</span> из <span id="maxScoreValue">100</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Комментарий преподавателя:</label>
+                <div class="feedback-box">
+                    <p id="teacherFeedback">Комментарий отсутствует</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Ваши файлы:</label>
+                <ul class="file-list" id="submittedFilesList">
+                    <!-- Files will be inserted here -->
+                </ul>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn" id="closeViewBtn">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="student_tasks.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Homework Management System</title>
+    <link rel="stylesheet" href="css/teacher_groups.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Панель учителя</h2>
+                <p>professor@university.edu</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active" data-tab="groups">
+                    <i class="fas fa-users"></i> Группы
+                </li>
+                <li data-tab="settings">
+                    <i class="fas fa-cog"></i> Настройки
+                </li>
+                <li style="margin-top: 20px; padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Groups list view -->
+            <div id="groups-tab" class="tab-content active">
+                <div class="header">
+                    <h1>Мои группы</h1>
+                    <button class="btn btn-primary" id="createGroupBtn">
+                        <i class="fas fa-plus"></i> Создать группу
+                    </button>
+                </div>
+
+                <div class="groups-grid" id="groupsContainer">
+                    <!-- Groups will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Group details view -->
+            <div id="group-details" class="tab-content" style="display: none;">
+                <button class="btn back-btn" id="backToGroups">
+                    <i class="fas fa-arrow-left"></i> К группам
+                </button>
+
+                <div class="group-header">
+                    <h2 id="group-name">Имя группы</h2>
+                    <p id="group-description">Описание группы</p>
+                    <div class="group-stats">
+                        <span>Студенты: <span id="students-count">0</span></span>
+                        <span>Задания: <span id="assignments-count">0</span></span>
+                        <span>Текущее задание: <span id="active-assignments">0</span></span>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" data-tab="students">Студенты</div>
+                    <div class="tab" data-tab="assignments">Задания</div>
+                    <div class="tab" data-tab="submissions">Отправленные задания</div>
+                </div>
+
+                <!-- Students tab -->
+                <div id="students-tab" class="tab-content active">
+                    <div class="header" style="border: none; padding: 0; margin: 0 0 20px 0;">
+                        <h3>Student List</h3>
+                        <button class="btn btn-primary" id="inviteStudentsBtn">
+                            <i class="fas fa-user-plus"></i> Пригласить студента
+                        </button>
+                    </div>
+                    <table id="students-table">
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Student data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Assignments tab -->
+                <div id="assignments-tab" class="tab-content">
+                    <div class="header" style="border: none; padding: 0; margin: 0 0 20px 0;">
+                        <button class="btn btn-primary" id="createAssignmentBtn">
+                            <i class="fas fa-tasks"></i> Создать задание
+                        </button>
+                    </div>
+                    <table id="assignments-table">
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Дедлайн</th>
+                                <th>Отправлено</th>
+                                <th>Проверено</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Assignment data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Submissions tab -->
+                <div id="submissions-tab" class="tab-content">
+                    <h3>Отправленные</h3>
+                    <table id="submissions-table">
+                        <thead>
+                            <tr>
+                                <th>Студент</th>
+                                <th>Задание</th>
+                                <th>Дата отправки</th>
+                                <th>Статус</th>
+                                <th>Оценка</th>
+                                <!-- <th>Actions</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Submission data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Group Modal -->
+    <div id="createGroupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Group</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="createGroupForm">
+                <div class="form-group">
+                    <label for="groupName">Имя группы</label>
+                    <input type="text" id="groupName" placeholder="e.g., Computer Science 101" required>
+                </div>
+                <div class="form-group">
+                    <label for="groupDescription">Описание</label>
+                    <textarea id="groupDescription" rows="3" placeholder="Brief description of the group..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="groupSubject">Предмет</label>
+                    <input type="text" id="groupSubject" placeholder="e.g., Programming Fundamentals">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="cancelGroupBtn">Отменить</button>
+                    <button type="submit" class="btn btn-primary">Создать группу</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Invite Students Modal -->
+    <div id="inviteStudentsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Пригласить студентов</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <p>Скопировать ссылку на приглашение</p>
+            <div class="invite-link">
+                <input type="text" id="inviteLink" readonly>
+                <button class="copy-btn" id="copyLinkBtn">
+                    <i class="fas fa-copy"></i> Копировать
+                </button>
+            </div>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: var(--gray);">
+                Студенты могут присоединиться по этой ссылке
+            </p>
+            <div class="form-actions">
+                <button type="button" class="btn" id="closeInviteBtn">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Assignment Modal -->
+    <div id="createAssignmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Создать задание</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="createAssignmentForm">
+                <div class="form-group">
+                    <label for="assignmentTitle">Имя задания</label>
+                    <input type="text" id="assignmentTitle" placeholder="e.g., Homework 1: Variables and Functions"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDescription">Описание</label>
+                    <textarea id="assignmentDescription" rows="4"
+                        placeholder="Detailed instructions for the assignment..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDeadline">Дедлайн</label>
+                    <input type="datetime-local" id="assignmentDeadline" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentMaxScore">Максимальный балл</label>
+                    <input type="number" id="assignmentMaxScore" min="1" value="100">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="cancelAssignmentBtn">Отменить</button>
+                    <button type="submit" class="btn btn-primary">Создать задание</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Grade Submission Modal -->
+    <div id="submissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Оценка задания</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Студент:</label>
+                <p id="submissionStudentName" style="font-weight: 600;">Student Name</p>
+            </div>
+            <div class="form-group">
+                <label>Задание:</label>
+                <p id="submissionAssignmentName" style="font-weight: 600;">Assignment Title</p>
+            </div>
+            <div class="form-group">
+                <label>Дата отправки:</label>
+                <p id="submissionDate">Date and time</p>
+            </div>
+            <div class="form-group">
+                <label>Отправленные файлы:</label>
+                <ul class="file-list" id="submissionFiles">
+                    <!-- Files will be inserted here -->
+                </ul>
+            </div>
+            <div class="form-group">
+                <label for="submissionGrade">Оценка (из <span id="maxScore">100</span>)</label>
+                <input type="number" id="submissionGrade" min="0" placeholder="Enter grade">
+            </div>
+            <div class="form-group">
+                <label for="submissionFeedback">Комментарий</label>
+                <textarea id="submissionFeedback" rows="4" placeholder="Оставить комментарий."></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn" id="cancelSubmissionBtn">Отменить</button>
+                <button type="button" class="btn btn-primary" id="saveSubmissionBtn">Сохранить оценку</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="teacher_goups.js"></script>
+</body>
+
+</html>

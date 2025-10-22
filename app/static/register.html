@@ -13,6 +13,10 @@
         <h2>Регистрация</h2>
         <form id="registerForm">
             <div class="form-group">
+                <label for="full_name">Полное имя:</label>
+                <input type="text" id="full_name" required>
+            </div>
+            <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" required>
             </div>
@@ -39,6 +43,8 @@
     </div>
 
     <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
         const roleToggle = document.getElementById('roleToggle');
         const roleText = document.getElementById('roleText');
 
@@ -50,9 +56,10 @@
             }
         });
 
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
+            const full_name = document.getElementById('full_name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
@@ -63,10 +70,57 @@
                 return;
             }
 
-            console.log('Email:', email);
-            console.log('Password:', password);
-            console.log('Role:', role);
-            alert('Регистрация успешна! Роль: ' + (role === 'teacher' ? 'Преподаватель' : 'Студент'));
+            if (password.length < 6) {
+                alert('Пароль должен содержать не менее 6 символов!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        full_name: full_name,
+                        email: email,
+                        password: password,
+                        role: role
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Сохраняем токен и данные пользователя
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify({
+                        user_id: data.user_id,
+                        full_name: data.full_name,
+                        email: data.email,
+                        role: data.role
+                    }));
+
+                    alert('Регистрация успешна!');
+
+                    // Перенаправляем в зависимости от роли
+                    if (data.role === 'student') {
+                        window.location.href = 'student_tasks.html';
+                    } else if (data.role === 'teacher') {
+                        window.location.href = 'teacher_groups.html';
+                    }
+                } else {
+                    const errorData = await response.json();
+                    if (response.status === 400) {
+                        alert('Ошибка регистрации: ' + (errorData.message || 'Email уже занят или неверные данные'));
+                    } else {
+                        alert(`Ошибка регистрации: ${errorData.message || 'Неизвестная ошибка'}`);
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при регистрации. Проверьте подключение к серверу.');
+            }
         });
     </script>
 </body>

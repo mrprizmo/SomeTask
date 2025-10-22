@@ -3,8 +3,8 @@ const mockData = {
     groups: [
         {
             id: 1,
-            name: "Computer Science 101",
-            description: "Introduction to Programming with Python",
+            name: "Основы и методологии прогроммирования",
+            description: "петон плохо",
             subject: "Computer Science",
             studentCount: 28,
             assignmentCount: 5,
@@ -13,8 +13,8 @@ const mockData = {
         },
         {
             id: 2,
-            name: "Web Development",
-            description: "Modern Web Technologies and Frameworks",
+            name: "Веб разработка",
+            description: "спринг бут джава я не шиз",
             subject: "Computer Science",
             studentCount: 22,
             assignmentCount: 4,
@@ -23,8 +23,8 @@ const mockData = {
         },
         {
             id: 3,
-            name: "Database Systems",
-            description: "Fundamentals of Database Design and SQL",
+            name: "Базы данных",
+            description: "постгрес библиотека",
             subject: "Information Systems",
             studentCount: 35,
             assignmentCount: 6,

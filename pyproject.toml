@@ -24,7 +24,6 @@ line-length = 100
 select = ["E", "F", "I", "UP", "N", "B", "C4", "RUF"]
 ignore = [
   "E203",  # совместимость с black для срезов
-  "W503",  # перенос оператора перед операндом — ok для black
 ]
 
 [tool.ruff.lint.isort]

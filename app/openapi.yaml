@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: SomeTask API
+  version: 1.0.0
+  description: API для системы сбора и проверки домашних заданий.
+
+paths:
+  /auth/register:
+    post:
+      summary: Регистрация пользователя
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [full_name, email, password, role]
+              properties:
+                full_name:
+                  type: string
+                  example: "Иван Иванов"
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  minLength: 6
+                  example: "password123"
+                role:
+                  type: string
+                  enum: [student, teacher]
+                  example: "student"
+      responses:
+        '201':
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                    example: 1
+                  full_name:
+                    type: string
+                    example: "Иван Иванов"
+                  email:
+                    type: string
+                    example: "user@example.com"
+                  role:
+                    type: string
+                    example: "student"
+                  token:
+                    type: string
+                    example: "abc123def456ghi789"
+        '400':
+          description: Ошибка валидации или email уже занят
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /auth/login:
+    post:
+      summary: Вход в систему
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                    example: 1
+                  full_name:
+                    type: string
+                    example: "Иван Иванов"
+                  email:
+                    type: string
+                    example: "user@example.com"
+                  role:
+                    type: string
+                    example: "student"
+                  token:
+                    type: string
+                    example: "abc123def456ghi789"
+        '401':
+          description: Неверные учетные данные
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /health:
+    get:
+      summary: Проверка здоровья сервиса
+      tags: [System]
+      responses:
+        '200':
+          description: Сервис работает
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+
+  /:
+    get:
+      summary: Информация о API
+      tags: [System]
+      responses:
+        '200':
+          description: Основная информация
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "SomeTask API"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                    
